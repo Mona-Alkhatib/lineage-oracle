@@ -1,0 +1,29 @@
+{
+  "nodes": {
+    "model.jaffle.stg_users": {
+      "name": "stg_users",
+      "resource_type": "model",
+      "depends_on": {"nodes": ["source.jaffle.raw.users"]},
+      "original_file_path": "models/staging/stg_users.sql",
+      "columns": {"user_id": {"name": "user_id", "description": "primary key"}},
+      "description": "Staging users"
+    },
+    "model.jaffle.fct_user_metrics": {
+      "name": "fct_user_metrics",
+      "resource_type": "model",
+      "depends_on": {"nodes": ["model.jaffle.stg_users"]},
+      "original_file_path": "models/marts/fct_user_metrics.sql",
+      "columns": {},
+      "description": "User metrics fact"
+    }
+  },
+  "sources": {
+    "source.jaffle.raw.users": {
+      "name": "users",
+      "schema": "raw",
+      "resource_type": "source",
+      "original_file_path": "models/staging/sources.yml",
+      "columns": {"user_id": {"name": "user_id"}, "signup_country": {"name": "signup_country"}}
+    }
+  }
+}
