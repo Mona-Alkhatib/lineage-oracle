@@ -1,0 +1,36 @@
+[project]
+name = "lineage-oracle"
+version = "0.1.0"
+description = "AI agent that answers grounded questions about a data warehouse"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.40.0",
+    "voyageai>=0.3.0",
+    "duckdb>=1.1.0",
+    "networkx>=3.3",
+    "typer>=0.13.0",
+    "streamlit>=1.40.0",
+    "pydantic>=2.9.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+oracle = "oracle.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.7.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "evals"]
