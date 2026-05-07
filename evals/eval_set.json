@@ -1,0 +1,82 @@
+[
+  {
+    "id": "lineage_001",
+    "category": "lineage",
+    "question": "What feeds fct_orders?",
+    "expected_facts": ["stg_orders"],
+    "must_cite": ["stg_orders.sql"],
+    "must_not_invent": true
+  },
+  {
+    "id": "lineage_002",
+    "category": "lineage",
+    "question": "What feeds stg_customers?",
+    "expected_facts": ["raw_customers"],
+    "must_cite": ["raw_customers"],
+    "must_not_invent": true
+  },
+  {
+    "id": "lineage_003",
+    "category": "lineage",
+    "question": "Which DAG refreshes raw.orders?",
+    "expected_facts": ["orders_ingest"],
+    "must_cite": ["orders_ingest"],
+    "must_not_invent": true
+  },
+  {
+    "id": "impact_001",
+    "category": "impact",
+    "question": "If I drop the customer_id column from stg_customers, what breaks?",
+    "expected_facts": ["customer_id"],
+    "must_cite": [],
+    "must_not_invent": true
+  },
+  {
+    "id": "impact_002",
+    "category": "impact",
+    "question": "What depends on stg_orders?",
+    "expected_facts": ["fct_orders"],
+    "must_cite": [],
+    "must_not_invent": true
+  },
+  {
+    "id": "schema_001",
+    "category": "schema",
+    "question": "What columns are in raw_orders?",
+    "expected_facts": ["id", "user_id", "order_date"],
+    "must_cite": [],
+    "must_not_invent": true
+  },
+  {
+    "id": "schema_002",
+    "category": "schema",
+    "question": "What columns does stg_payments expose?",
+    "expected_facts": [],
+    "must_cite": [],
+    "must_not_invent": true
+  },
+  {
+    "id": "semantic_001",
+    "category": "semantic",
+    "question": "Which table tracks customer payments?",
+    "expected_facts": ["payments"],
+    "must_cite": [],
+    "must_not_invent": true
+  },
+  {
+    "id": "semantic_002",
+    "category": "semantic",
+    "question": "Where do we store order data?",
+    "expected_facts": ["orders"],
+    "must_cite": [],
+    "must_not_invent": true
+  },
+  {
+    "id": "semantic_003",
+    "category": "semantic",
+    "question": "What is the customer fact table called?",
+    "expected_facts": ["customers"],
+    "must_cite": [],
+    "must_not_invent": true
+  }
+]
