@@ -26,14 +26,16 @@ def index(
 ) -> None:
     """Parse inputs, build the graph + index, and persist artifacts."""
     load_dotenv()
-    from oracle.ingest.airflow import parse_dag_file
-    from oracle.ingest.dbt import parse_manifest
-    from oracle.ingest.warehouse import read_warehouse
+    import voyageai
+
     from oracle.graph.builder import build_graph
     from oracle.graph.store import save_graph
     from oracle.index.descriptions import describe_node
     from oracle.index.embeddings import embed_texts
     from oracle.index.store import VectorStore
+    from oracle.ingest.airflow import parse_dag_file
+    from oracle.ingest.dbt import parse_manifest
+    from oracle.ingest.warehouse import read_warehouse
 
     typer.echo("Parsing dbt manifest...")
     m = parse_manifest(manifest)
@@ -52,7 +54,6 @@ def index(
     typer.echo(f"Saved {out_dir / 'graph.json'} ({g.number_of_nodes()} nodes)")
 
     typer.echo("Embedding nodes...")
-    import voyageai
     voyage = voyageai.Client(api_key=os.environ["VOYAGE_API_KEY"])
 
     node_ids = list(g.nodes)
@@ -79,38 +80,14 @@ def ask(
 ) -> None:
     """Ask Oracle a question."""
     load_dotenv()
-    import anthropic
-    import voyageai
+    from oracle.runtime import build_agent
 
-    from oracle.agent import Agent
-    from oracle.graph.store import load_graph
-    from oracle.index.embeddings import embed_texts
-    from oracle.index.store import VectorStore
-    from oracle.tools.lineage import get_lineage
-    from oracle.tools.references import find_references
-    from oracle.tools.schema import get_schema
-    from oracle.tools.search import search_artifacts
-
-    graph = load_graph(out_dir / "graph.json")
-    vstore = VectorStore(path=out_dir / "vectors.duckdb", dim=1024)
-    voyage = voyageai.Client(api_key=os.environ["VOYAGE_API_KEY"])
-
-    def embed(texts, input_type="document"):
-        return embed_texts(texts, client=voyage, model="voyage-3", input_type=input_type)
-
-    def runner(name: str, args: dict):
-        if name == "search_artifacts":
-            return search_artifacts(args["query"], k=args.get("k", 5), store=vstore, embed_fn=embed)
-        if name == "get_lineage":
-            return get_lineage(graph, node_id=args["node_id"], direction=args["direction"], depth=args.get("depth", 3))
-        if name == "get_schema":
-            return get_schema(args["table"], warehouse_path=warehouse)
-        if name == "find_references":
-            return find_references(args["needle"], search_dirs=[search_dir])
-        return {"error": f"unknown tool: {name}"}
-
-    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-    agent = Agent(client=client, tool_runner=runner)
-    answer = agent.ask(question)
-    typer.echo(answer)
-    vstore.close()
+    agent, vstore = build_agent(
+        index_dir=out_dir,
+        warehouse_path=warehouse,
+        search_dir=search_dir,
+    )
+    try:
+        typer.echo(agent.ask(question))
+    finally:
+        vstore.close()
