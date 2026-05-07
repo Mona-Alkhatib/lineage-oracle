@@ -94,7 +94,3 @@ uv run pytest evals/ -v
 See `docs/superpowers/specs/2026-05-06-lineage-oracle-design.md` for the
 full design spec, and `docs/superpowers/plans/2026-05-06-lineage-oracle.md`
 for the 24-task implementation plan.
-
-## License
-
-MIT
