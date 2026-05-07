@@ -89,8 +89,9 @@ uv run pytest evals/ -v
 - **UI:** Streamlit
 - **Test framework:** pytest
 
-## Project structure
+## Documentation
 
-See `docs/superpowers/specs/2026-05-06-lineage-oracle-design.md` for the
-full design spec, and `docs/superpowers/plans/2026-05-06-lineage-oracle.md`
-for the 24-task implementation plan.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — system architecture, components, key design decisions
+- [`docs/EVALS.md`](docs/EVALS.md) — eval harness format, metrics, and how to run
+- [`docs/superpowers/specs/2026-05-06-lineage-oracle-design.md`](docs/superpowers/specs/2026-05-06-lineage-oracle-design.md) — full design spec
+- [`docs/superpowers/plans/2026-05-06-lineage-oracle.md`](docs/superpowers/plans/2026-05-06-lineage-oracle.md) — 24-task implementation plan
